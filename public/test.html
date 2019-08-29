@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+</head>
+
+<body>
+  <input id="demo" :model="value" />
+  <input id="demo1" :model="value1" />
+  <input :model="value2" />
+  <button onclick="subtract()">减</button>
+  <button onclick="add()">加</button>
+  <button onclick="subtractDom()">dom减</button>
+  <button onclick="subtractDom1()">dom减1</button>
+  <script>
+    var data = {
+      value: 0,
+      value1: 1,
+      value2: 2
+    }
+    let initValue = data.value
+    // let elements = document.querySelectorAll('[:model]')
+    let elements = document.all
+    // elements.forEach(element,i => {
+    //   console.log(i)
+    // })
+    let elData = {}
+    Array.prototype.forEach.call(elements, element => {
+      let value = element.getAttribute(':model')
+      if (value) {
+        element.value = data[value]
+        elData[value] = element
+        element.onchange = (e) => {
+          data[value] = e.target.value
+          console.log(e)
+          console.log('changeInput')
+        }
+        // demo.addEventListener('onchange', ()=>{
+        //   console.log('changeInput')
+        // })
+      }
+    })
+    // console.log('elements:', elements)
+    // var demo = document.getElementById("demo") // 对每个使用model对象的元素的遍历过程简化成只搜索一个dom
+    // console.log(value)
+    Object.keys(data).forEach(key => {
+      Object.defineProperty(data, key, {
+        get: function () {
+          return data[`_${key}`] || initValue
+        },
+        set: function (value) {
+          debugger
+          data[`_${key}`] = value
+          // data._value = value
+          // demo.value = value
+          elData[key].value = value
+        }
+      });
+    });
+    function subtract() {
+      data.value = Number.parseInt(data.value) - 1
+    };
+    function add() {
+      data.value = Number.parseInt(data.value) + 1
+    };
+    function subtractDom() {
+      data.value1 = Number.parseInt(data.value1) - 1
+    };
+    function subtractDom1() {
+      data.value2 = Number.parseInt(data.value2) - 1
+    };
+  </script>
+</body>
+
+</html>
